@@ -45,4 +45,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function role()
+{
+    return $this->hasOne(Role::class);
+}
+
+public function hasPermission(string $module, string $action): bool
+{
+    $permissions = $this->role?->permissions;
+    return isset($permissions[$module][$action]) && $permissions[$module][$action] === true;
+}
+
 }

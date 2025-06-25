@@ -6,7 +6,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Calendar, Download, MoreVertical, Plus } from 'lucide-react';
 import { useState } from 'react';
 
-interface ClientSuratKeluarItem {
+interface SuratKeluarClient {
     keluar_client_id: number;
     nama_client: string;
     no_telp_client: string;
@@ -14,7 +14,11 @@ interface ClientSuratKeluarItem {
     alamat_client: string;
 }
 
-const sampleData: ClientSuratKeluarItem[] = [];
+interface PageProps{
+    myklien: SuratKeluarClient[];
+}
+
+//const sampleData: ClientSuratKeluarItem[] = [];
 
 const SortIcon = ({ sorted }: { sorted: 'asc' | 'desc' | null }) => {
     return (
@@ -31,20 +35,20 @@ const SortIcon = ({ sorted }: { sorted: 'asc' | 'desc' | null }) => {
 
 const RequiredStar = () => <span className="text-red-500">*</span>;
 
-export default function ClientManagement() {
+export default function ClientSuratKeluar({myklien}: PageProps) {
     const [fromDate, setFromDate] = useState<string>('');
     const [toDate, setToDate] = useState<string>('');
 
-    const [data, setData] = useState<ClientSuratKeluarItem[]>(sampleData);
+    const [data, setData] = useState<SuratKeluarClient[]>([]);
     const [sortConfig, setSortConfig] = useState<{
-        key: keyof ClientSuratKeluarItem;
+        key: keyof PageProps;
         direction: 'asc' | 'desc';
     } | null>(null);
     const [showMenu, setShowMenu] = useState<number | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [entriesPerPage, setEntriesPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [formData, setFormData] = useState<Omit<ClientSuratKeluarItem, 'keluar_client_id'>>({
+    const [formData, setFormData] = useState({
         nama_client: '',
         no_telp_client: '',
         email_client: '',
@@ -74,14 +78,14 @@ export default function ClientManagement() {
         }
         setSortConfig({ key, direction });
 
-        const sorted = [...data].sort((a, b) => {
+        const sorted = [...client].sort((a, b) => {
             if (!a[key] || !b[key]) return 0;
             if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
             if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
             return 0;
         });
 
-        setData(sorted);
+        (sorted);
     };
 
     const renderSortIcon = (key: keyof ClientSuratKeluarItem) => {
@@ -91,25 +95,42 @@ export default function ClientManagement() {
         return <SortIcon sorted={sortConfig.direction} />;
     };
 
-    const handleAdd = () => {
+    /*const handleAdd = () => {
         if (validateForm()) {
             const newItem: ClientSuratKeluarItem = {
-                keluar_client_id: data.length > 0 ? Math.max(...data.map((item) => item.keluar_client_id)) + 1 : 1,
+                keluar_client_id: client.length > 0 ? Math.max(...client.map((item) => item.keluar_client_id)) + 1 : 1,
                 nama_client: formData.nama_client,
                 no_telp_client: formData.no_telp_client,
                 email_client: formData.email_client,
                 alamat_client: formData.alamat_client,
             };
-            setData([...data, newItem]);
+            setFormData([...data, newItem]);
             router.post(route("surat-keluar-client.store"), formData); 
             resetForm();
             setShowModal(false);
         }
+    };*/
+
+    const handleAdd = () => {
+  if (validateForm()) {
+    const SuratKeluarClient = {
+      keluar_client_id: myklien.length > 0 ? Math.max(...myklien.map((item) => item.keluar_client_id)) + 1 : 1,
+      nama_client: formData.nama_client,
+      no_telp_client: formData.no_telp_client,
+      email_client: formData.email_client,
+      alamat_client: formData.alamat_client,
     };
+
+    router.post(route("surat-keluar-client.store"), SuratKeluarClient); // ✅ kirim newItem, bukan formData
+
+    resetForm();
+    setShowModal(false);
+  }
+};
 
     const handleDelete = (id: number) => {
         if (confirm('Apakah Anda yakin ingin menghapus client ini?')) {
-            setData(data.filter((item) => item.keluar_client_id !== id));
+            setData(client.filter((item) => item.keluar_client_id !== id));
         }
     };
 
@@ -125,7 +146,7 @@ export default function ClientManagement() {
 
     const handleExport = () => {
         const csvHeader = ['ID', 'ID Client', 'Nomor Telepon', 'Email', 'Nama', 'Alamat Perusahaan'];
-        const csvRows = [csvHeader, ...data.map((item) => [item.keluar_client_id, item.nama_client, item.no_telp_client, item.email_client, item.alamat_client])];
+        const csvRows = [csvHeader, ...client.map((item) => [item.keluar_client_id, item.nama_client, item.no_telp_client, item.email_client, item.alamat_client])];
 
         const csvContent = csvRows.map((row) => row.map(String).join(',')).join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -143,7 +164,7 @@ export default function ClientManagement() {
             <Head title="Client" />
             <div className="space-y-4 p-4">
                 <h1 className="text-2xl font-bold">Data Surat Keluar / Client</h1>
-
+                
                 <Card className="p-4">
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

@@ -27,8 +27,8 @@ public function index(): Response
 {
     $data = SuratKeluarClient::all();
 
-    return Inertia::render('SuratKeluarClient', [
-        'suratKeluar' => $data,
+    return Inertia::render('ClientSuratKeluar', [
+        'myklien' => $data,
     ]);
 }
 

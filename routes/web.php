@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\SuratKeluarClientController;
 use App\Http\Controllers\SuratKeluarController;
+use App\Http\Controllers\RoleController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -24,9 +25,9 @@ Route::get('/persuratan/client-surat-masuk', function () {
 })->name('client.surat.masuk');
 
 
-Route::get('/persuratan/surat-keluar', function () {
+/*Route::get('/persuratan/surat-keluar', function () {
     return Inertia::render('SuratKeluar');
-})->name('surat.keluar');
+})->name('surat.keluar');*/
 Route::get('/persuratan/client-surat-keluar', function () {
     return Inertia::render('ClientSuratKeluar');
 })->name('client.surat.Keluar');
@@ -52,9 +53,9 @@ Route::get('/client-invoice', function () {
 Route::get('/data-master/user', function () {
     return Inertia::render('User');
 })->name('User');
-Route::get('/data-master/roles', function () {
+/*Route::get('/data-master/roles', function () {
     return Inertia::render('Roles');
-})->name('Roles');
+})->name('Roles');*/
 Route::get('/data-master/kategori-surat', function () {
     return Inertia::render('Kategori Surat');
 })->name('Kategori Surat');
@@ -62,5 +63,13 @@ Route::get('/data-master/kategori-surat', function () {
 Route::post('/persuratan/client-surat-keluar', [SuratKeluarClientController::class, 'store'])->name('surat-keluar-client.store');
 
 Route::post('/persuratan/surat-keluar', [SuratKeluarController::class, 'store'])->name('surat-keluar.store');
+Route::get('/persuratan/surat-keluar', [SuratKeluarController::class, 'index'])->name('surat-keluar.index');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::put('/roles/{id}', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
+});
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class SuratKeluar extends Model
 {
-     // Nama tabel secara eksplisit jika tidak mengikuti konvensi Laravel
+    // Nama tabel secara eksplisit jika tidak mengikuti konvensi Laravel
     protected $table = 'surat_keluars';
 
     // Kunci primer kustom
-    protected $primaryKey = 'id_surat_keluar';
+    protected $primaryKey = 'ID_Surat_Keluar';
 
     // Non-incrementing jika ID bukan auto-increment (opsional)
     public $incrementing = true;
@@ -23,27 +23,29 @@ class SuratKeluar extends Model
 
     // Kolom yang bisa diisi secara massal
     protected $fillable = [
-        'nomor_surat',
-        'tanggal_Kirim',
-        'keluar_client_id',
-        'perihal',
+        'Nomor_surat',
+        'Tanggal_Kirim',
+        'Penerima',
+        'Perihal',
         'file_Lampiran',
+        'link',
         'timestamp',
         'hash_code',
         'nama_file',
     ];
 
+    protected $casts = [
+        'Lampiran' => 'boolean',
+    ];
+ 
     protected $appends = ['file_path'];
 
 public function getFilePathAttribute()
 {
-    return $this->attributes['Lampiran']
-        ? asset('storage/' . $this->attributes['Lampiran'])
+    return $this->attributes['file_Lampiran']
+        ? asset('storage/' . $this->attributes['file_Lampiran'])
         : null;
 }
 
-    public function client()
-{
-    return $this->belongsTo(SuratKeluarClient::class, 'keluar_client_id', 'keluar_client_id');
-}
+
 }

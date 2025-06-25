@@ -37,7 +37,7 @@ const mainNavItems: NavItem[] = [
         icon: Database,
         children: [
             { title: 'User', href: '/data-master/user' },
-            { title: 'Roles', href: '/data-master/roles' },
+            { title: 'Roles', href: '/roles' },
         ],
     },
 ];

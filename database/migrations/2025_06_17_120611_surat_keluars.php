@@ -23,7 +23,7 @@ return new class extends Migration
         $table->string('penerima');
         $table->text('perihal');
         $table->string('file_Lampiran')->nullable();
-        $table->timestamp('timestamp')->useCurrent();
+        $table->timestamps();
         $table->string('hash_code')->nullable();
         $table->string('nama_file')->nullable();
         });
